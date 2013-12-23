@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07751EC41867ECF100DB9DDF /* Battery_320-10.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EBA1867ECF100DB9DDF /* Battery_320-10.png */; };
+		07751EC51867ECF100DB9DDF /* Battery_320-20.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EBB1867ECF100DB9DDF /* Battery_320-20.png */; };
+		07751EC61867ECF100DB9DDF /* Battery_320-30.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EBC1867ECF100DB9DDF /* Battery_320-30.png */; };
+		07751EC71867ECF100DB9DDF /* Battery_320-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EBD1867ECF100DB9DDF /* Battery_320-40.png */; };
+		07751EC81867ECF100DB9DDF /* Battery_320-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EBE1867ECF100DB9DDF /* Battery_320-50.png */; };
+		07751EC91867ECF100DB9DDF /* Battery_320-60.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EBF1867ECF100DB9DDF /* Battery_320-60.png */; };
+		07751ECA1867ECF100DB9DDF /* Battery_320-70.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EC01867ECF100DB9DDF /* Battery_320-70.png */; };
+		07751ECB1867ECF100DB9DDF /* Battery_320-80.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EC11867ECF100DB9DDF /* Battery_320-80.png */; };
+		07751ECC1867ECF100DB9DDF /* Battery_320-90.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EC21867ECF100DB9DDF /* Battery_320-90.png */; };
+		07751ECD1867ECF100DB9DDF /* Battery_320-100.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751EC31867ECF100DB9DDF /* Battery_320-100.png */; };
+		07751ECF1867EDBD00DB9DDF /* DC.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751ECE1867EDBD00DB9DDF /* DC.png */; };
+		07751ED11867EDC500DB9DDF /* USB.png in Resources */ = {isa = PBXBuildFile; fileRef = 07751ED01867EDC500DB9DDF /* USB.png */; };
 		428615B71845F340005D5A2E /* image_sample.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 428615B61845F340005D5A2E /* image_sample.jpg */; };
 		6400DDD9180C5DE000443362 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6400DDD8180C5DE000443362 /* Foundation.framework */; };
 		6400DDDB180C5DE000443362 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6400DDDA180C5DE000443362 /* CoreGraphics.framework */; };
@@ -26,6 +38,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07751EBA1867ECF100DB9DDF /* Battery_320-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-10.png"; sourceTree = "<group>"; };
+		07751EBB1867ECF100DB9DDF /* Battery_320-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-20.png"; sourceTree = "<group>"; };
+		07751EBC1867ECF100DB9DDF /* Battery_320-30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-30.png"; sourceTree = "<group>"; };
+		07751EBD1867ECF100DB9DDF /* Battery_320-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-40.png"; sourceTree = "<group>"; };
+		07751EBE1867ECF100DB9DDF /* Battery_320-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-50.png"; sourceTree = "<group>"; };
+		07751EBF1867ECF100DB9DDF /* Battery_320-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-60.png"; sourceTree = "<group>"; };
+		07751EC01867ECF100DB9DDF /* Battery_320-70.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-70.png"; sourceTree = "<group>"; };
+		07751EC11867ECF100DB9DDF /* Battery_320-80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-80.png"; sourceTree = "<group>"; };
+		07751EC21867ECF100DB9DDF /* Battery_320-90.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-90.png"; sourceTree = "<group>"; };
+		07751EC31867ECF100DB9DDF /* Battery_320-100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Battery_320-100.png"; sourceTree = "<group>"; };
+		07751ECE1867EDBD00DB9DDF /* DC.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DC.png; sourceTree = "<group>"; };
+		07751ED01867EDC500DB9DDF /* USB.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = USB.png; sourceTree = "<group>"; };
 		428615B61845F340005D5A2E /* image_sample.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image_sample.jpg; sourceTree = "<group>"; };
 		6400DDD5180C5DE000443362 /* Template Framework Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Template Framework Project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6400DDD8180C5DE000443362 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -66,9 +90,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07751EB91867ECD500DB9DDF /* batterIcon */ = {
+			isa = PBXGroup;
+			children = (
+				07751ED01867EDC500DB9DDF /* USB.png */,
+				07751ECE1867EDBD00DB9DDF /* DC.png */,
+				07751EBA1867ECF100DB9DDF /* Battery_320-10.png */,
+				07751EBB1867ECF100DB9DDF /* Battery_320-20.png */,
+				07751EBC1867ECF100DB9DDF /* Battery_320-30.png */,
+				07751EBD1867ECF100DB9DDF /* Battery_320-40.png */,
+				07751EBE1867ECF100DB9DDF /* Battery_320-50.png */,
+				07751EBF1867ECF100DB9DDF /* Battery_320-60.png */,
+				07751EC01867ECF100DB9DDF /* Battery_320-70.png */,
+				07751EC11867ECF100DB9DDF /* Battery_320-80.png */,
+				07751EC21867ECF100DB9DDF /* Battery_320-90.png */,
+				07751EC31867ECF100DB9DDF /* Battery_320-100.png */,
+			);
+			name = batterIcon;
+			sourceTree = "<group>";
+		};
 		6400DDCC180C5DE000443362 = {
 			isa = PBXGroup;
 			children = (
+				07751EB91867ECD500DB9DDF /* batterIcon */,
 				6400DDDE180C5DE000443362 /* Template Framework Project */,
 				6400DDD7180C5DE000443362 /* Frameworks */,
 				6400DDD6180C5DE000443362 /* Products */,
@@ -189,12 +233,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				6400DE1D180C5FBE00443362 /* eng.traineddata in Resources */,
+				07751EC71867ECF100DB9DDF /* Battery_320-40.png in Resources */,
 				6400DDF1180C5DE000443362 /* Images.xcassets in Resources */,
 				6400DE20180C5FBE00443362 /* ita.traineddata in Resources */,
+				07751ED11867EDC500DB9DDF /* USB.png in Resources */,
+				07751EC51867ECF100DB9DDF /* Battery_320-20.png in Resources */,
+				07751ECD1867ECF100DB9DDF /* Battery_320-100.png in Resources */,
 				428615B71845F340005D5A2E /* image_sample.jpg in Resources */,
+				07751EC61867ECF100DB9DDF /* Battery_320-30.png in Resources */,
+				07751EC91867ECF100DB9DDF /* Battery_320-60.png in Resources */,
+				07751EC41867ECF100DB9DDF /* Battery_320-10.png in Resources */,
+				07751ECB1867ECF100DB9DDF /* Battery_320-80.png in Resources */,
+				07751EC81867ECF100DB9DDF /* Battery_320-50.png in Resources */,
 				6400DE1E180C5FBE00443362 /* equ.traineddata in Resources */,
 				6400DDE3180C5DE000443362 /* InfoPlist.strings in Resources */,
 				6400DE1F180C5FBE00443362 /* grc.traineddata in Resources */,
+				07751ECA1867ECF100DB9DDF /* Battery_320-70.png in Resources */,
+				07751ECC1867ECF100DB9DDF /* Battery_320-90.png in Resources */,
+				07751ECF1867EDBD00DB9DDF /* DC.png in Resources */,
 				6400DDEC180C5DE000443362 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
