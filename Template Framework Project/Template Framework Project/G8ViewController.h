@@ -19,4 +19,5 @@
 @property(nonatomic,retain)IBOutlet UILabel *mylabel;
 
 
+
 @end

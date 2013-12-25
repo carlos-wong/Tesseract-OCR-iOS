@@ -12,12 +12,23 @@
 
 
 @interface G8ViewController ()
+- (IBAction)myButton:(id)sender;
 
 @end
 
 @implementation G8ViewController
 
 @synthesize batterPerecent;
+@synthesize mylabel;
+
+- (IBAction)myButton:(id)sender;
+{
+    NSLog(@"some on press the button");
+    UIImageWriteToSavedPhotosAlbum([self screenshot],nil,nil,nil);
+    
+    
+
+}
 
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
@@ -39,47 +50,10 @@
 }
 - (UIImage *)captureScreen
 {
-    // Create a graphics context with the target size
-    // On iOS 4 and later, use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
-    // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
-    CGSize imageSize = [[UIScreen mainScreen] bounds].size;
-    if (NULL != UIGraphicsBeginImageContextWithOptions)
-        UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
-    else
-        UIGraphicsBeginImageContext(imageSize);
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    // Iterate over every window from back to front
-    for (UIWindow *window in [[UIApplication sharedApplication] windows])
-    {
-        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen])
-        {
-            // -renderInContext: renders in the coordinate space of the layer,
-            // so we must first apply the layer's geometry to the graphics context
-            CGContextSaveGState(context);
-            // Center the context around the window's anchor point
-            CGContextTranslateCTM(context, [window center].x, [window center].y);
-            // Apply the window's transform about the anchor point
-            CGContextConcatCTM(context, [window transform]);
-            // Offset by the portion of the bounds left of and above the anchor point
-            CGContextTranslateCTM(context,
-                                  -[window bounds].size.width * [[window layer] anchorPoint].x,
-                                  -[window bounds].size.height * [[window layer] anchorPoint].y);
-            
-            // Render the layer hierarchy to the current context
-            [[window layer] renderInContext:context];
-            
-            // Restore the context
-            CGContextRestoreGState(context);
-        }
-    }
     
     // Retrieve the screenshot image
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-//    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    UIImage *image = [self captureImageOfView:self.view];
+    //    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
     NSString  *pngPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Test.png"];
     NSString  *jpgPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Test.jpg"];
     
@@ -124,6 +98,96 @@
     return anImage;
 }
 
+-(UIImage *) captureRectOfScreen:(CGRect) rect
+{
+    UIImage *wholeScreen = [self screenshot];
+    
+    //Add status bar height
+    rect.origin.y += UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation) ? [[UIApplication sharedApplication] statusBarFrame].size.width : [[UIApplication sharedApplication] statusBarFrame].size.height;
+    
+    //NSLog(@"%@",NSStringFromCGSize([wholeScreen size]));
+    
+    CGFloat scale = wholeScreen.scale;
+    
+    rect.origin.x *= scale;
+    rect.origin.y *= scale;
+    rect.size.width *= scale;
+    rect.size.height *= scale;
+    
+    UIImage *cropped = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([wholeScreen CGImage], rect) scale:wholeScreen.scale orientation:wholeScreen.imageOrientation];
+    
+    //NSLog(@"Whole Screen Capt :%@ Scale: %f",NSStringFromCGSize([wholeScreen size]), wholeScreen.scale);
+    //NSLog(@"Rect to Crop :%@ Cropped :%@",NSStringFromCGRect(rect), NSStringFromCGSize([cropped size]));
+    
+    return cropped;
+}
+-(UIImage *) screenshotold
+{
+    UIScreen *screen = [UIScreen mainScreen];
+    UIView *view = [screen snapshotViewAfterScreenUpdates:YES];
+    
+    UIGraphicsBeginImageContextWithOptions(screen.bounds.size, NO, 0);
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+-(UIImage *) screenshot
+{
+    CGImageRef screen = UIGetScreenImage();
+	UIImage* image = [UIImage imageWithCGImage:screen];
+	CGImageRelease(screen);
+    return image;
+}
+-(UIImage *) screenshotold2
+{
+    // Create a graphics context with the target size
+    // On iOS 4 and later, use UIGraphicsBeginImageContextWithOptions to take the scale into consideration
+    // On iOS prior to 4, fall back to use UIGraphicsBeginImageContext
+    CGSize imageSize = [[UIScreen mainScreen] bounds].size;
+    if (NULL != UIGraphicsBeginImageContextWithOptions)
+        UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
+    else
+        UIGraphicsBeginImageContext(imageSize);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    NSLog(@"run screenshot");
+    // Iterate over every window from back to front
+    for (UIWindow *window in [[UIApplication sharedApplication] windows])
+    {
+        NSLog(@"window is: %@",window);
+        if (![window respondsToSelector:@selector(screen)] || [window screen] == [UIScreen mainScreen])
+        {
+            NSLog(@"draw");
+            // -renderInContext: renders in the coordinate space of the layer,
+            // so we must first apply the layer's geometry to the graphics context
+            CGContextSaveGState(context);
+            // Center the context around the window's anchor point
+            CGContextTranslateCTM(context, [window center].x, [window center].y);
+            // Apply the window's transform about the anchor point
+            CGContextConcatCTM(context, [window transform]);
+            // Offset by the portion of the bounds left of and above the anchor point
+            CGContextTranslateCTM(context,
+                                  -[window bounds].size.width * [[window layer] anchorPoint].x,
+                                  -[window bounds].size.height * [[window layer] anchorPoint].y);
+            
+            // Render the layer hierarchy to the current context
+            [[window layer] renderInContext:context];
+            
+            // Restore the context
+            CGContextRestoreGState(context);
+        }
+    }
+    NSLog(@"run screenshot end");
+
+    // Retrieve the screenshot image
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -139,14 +203,15 @@
 	
 	NSLog(@"hello carlos:%@", [tesseract recognizedText]);
 	[tesseract clear];
-    UIImageWriteToSavedPhotosAlbum([self captureImageOfView:self.view],nil,nil,nil);
+//    UIImageWriteToSavedPhotosAlbum([self captureImageOfView:self.view],nil,nil,nil);
+    UIImageWriteToSavedPhotosAlbum([self screenshot],nil,nil,nil);
+
 //    [self captureScreen];
     
-//    NSString  *pngPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/example.jpeg"];
+//    NSString  *pngPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Test.png"];
 //    NSLog(@"png path is: %@",pngPath);
 //    UIImage* image = [UIImage imageNamed:pngPath];
 //    batterPerecent.image = image;
-
 
 }
 
@@ -155,5 +220,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 @end
