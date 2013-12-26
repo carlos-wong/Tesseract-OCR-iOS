@@ -24,11 +24,17 @@
 - (IBAction)myButton:(id)sender;
 {
     NSLog(@"some on press the button");
-    UIImageWriteToSavedPhotosAlbum([self screenshot],nil,nil,nil);
-    
-    
+    CGRect tempRect;
+    UIImage *tempImage = [self crop:tempRect];
+//    CGSize imageSize;
+//    imageSize.height = 30;
+//    imageSize.width = 90;
+//    UIImage *tempImage1 = [self reSizeImage:tempImage toSize:imageSize];
+    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
 
 }
+
+
 
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
@@ -132,10 +138,33 @@
     UIGraphicsEndImageContext();
     return image;
 }
+
+
+- (UIImage *) reSizeImage:(UIImage *)image toSize:(CGSize)reSize {
+    NSLog(@"srcimage is %@",image);
+    UIGraphicsBeginImageContext(CGSizeMake(reSize.width, reSize.height));
+    [image drawInRect:CGRectMake(0, 0, reSize.width, reSize.height)];
+    UIImage *reSizeImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSLog(@"reszieimage end");
+    return reSizeImage;
+}
+- (UIImage *)crop:(CGRect)rect {
+    rect.origin.x = (2*[[UIApplication sharedApplication] statusBarFrame].size.width)*3/4;
+    rect.origin.y = 0;
+    rect.size.width = (2*[[UIApplication sharedApplication] statusBarFrame].size.width)*1/4;
+    rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
+    CGImageRef imageRef = CGImageCreateWithImageInRect(UIGetScreenImage(), rect);
+    UIImage *result = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    return result;
+}
 -(UIImage *) screenshot
 {
+    
     CGImageRef screen = UIGetScreenImage();
 	UIImage* image = [UIImage imageWithCGImage:screen];
+    
 	CGImageRelease(screen);
     return image;
 }
@@ -204,7 +233,7 @@
 	NSLog(@"hello carlos:%@", [tesseract recognizedText]);
 	[tesseract clear];
 //    UIImageWriteToSavedPhotosAlbum([self captureImageOfView:self.view],nil,nil,nil);
-    UIImageWriteToSavedPhotosAlbum([self screenshot],nil,nil,nil);
+//    UIImageWriteToSavedPhotosAlbum([self screenshot],nil,nil,nil);
 
 //    [self captureScreen];
     
