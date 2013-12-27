@@ -39,11 +39,13 @@
 
     
 }
+//TODO test the battery value when not charge
 - (UIImage *)captureScreenWithRect:(CGRect)rect {
-    rect.origin.x = (2*[[UIApplication sharedApplication] statusBarFrame].size.width)*3/4;
+    rect.origin.x = 495;
     rect.origin.y = 0;
-    rect.size.width = (2*[[UIApplication sharedApplication] statusBarFrame].size.width)*1/4;
+    rect.size.width = 43;
     rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
+    NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
     CGImageRef image = UIGetScreenImage();
     CGImageRef imageRef = CGImageCreateWithImageInRect(image, rect);
     UIImage *result = [UIImage imageWithCGImage:imageRef];
