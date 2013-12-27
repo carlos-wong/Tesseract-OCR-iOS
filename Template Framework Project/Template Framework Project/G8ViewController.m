@@ -13,7 +13,6 @@
 
 @interface G8ViewController ()
 - (IBAction)myButton:(id)sender;
-
 @end
 
 @implementation G8ViewController
@@ -26,12 +25,18 @@
     NSLog(@"some on press the button");
     CGRect tempRect;
     UIImage *tempImage = [self crop:tempRect];
-//    CGSize imageSize;
-//    imageSize.height = 30;
-//    imageSize.width = 90;
-//    UIImage *tempImage1 = [self reSizeImage:tempImage toSize:imageSize];
-    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
 
+//    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
+
+    Tesseract* tesseract1 = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
+	
+	[tesseract1 setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
+	[tesseract1 setImage:tempImage]; //image to check
+	[tesseract1 recognize];
+	
+	NSLog(@"hello carlos:%@", [tesseract1 recognizedText]);
+
+    
 }
 
 
@@ -222,7 +227,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 	
-	Tesseract* tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
+	tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
 	//language are used for recognition. Ex: eng. Tesseract will search for a eng.traineddata file in the dataPath directory.
 	//eng.traineddata is in your "tessdata" folder.
 	

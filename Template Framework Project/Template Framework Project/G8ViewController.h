@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <TesseractOCR/TesseractOCR.h>
+
 
 @interface G8ViewController : UIViewController
 {
     IBOutlet UIImageView *batterPerecent;
     IBOutlet UILabel *mylabel;
+    Tesseract* tesseract;
 
 }
 - (UIImage *)captureScreen;
