@@ -28,13 +28,14 @@
 
 //    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
 
-    Tesseract* tesseract1 = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
+    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
 	
-	[tesseract1 setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
-	[tesseract1 setImage:tempImage]; //image to check
-	[tesseract1 recognize];
+	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
+	[tesseract setImage:tempImage]; //image to check
+    NSLog(@"the tesseract is %@",tesseract);
+	[tesseract recognize];
 	
-	NSLog(@"hello carlos:%@", [tesseract1 recognizedText]);
+	NSLog(@"hello carlos:%@", [tesseract recognizedText]);
 
     
 }
