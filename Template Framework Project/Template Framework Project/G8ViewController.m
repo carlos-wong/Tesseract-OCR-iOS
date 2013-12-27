@@ -12,6 +12,7 @@
 
 
 @interface G8ViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *batterVaule;
 - (IBAction)myButton:(id)sender;
 @end
 
@@ -19,6 +20,7 @@
 
 @synthesize batterPerecent;
 @synthesize mylabel;
+@synthesize batterVaule;
 
 - (IBAction)myButton:(id)sender;
 {
@@ -26,7 +28,7 @@
     CGRect tempRect;
     UIImage *tempImage = [self captureScreenWithRect:tempRect];
 
-//    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
+    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
 
     tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
 	
@@ -34,16 +36,20 @@
 	[tesseract setImage:tempImage]; //image to check
     NSLog(@"the tesseract is %@",tesseract);
 	[tesseract recognize];
-	
-	NSLog(@"hello carlos:%@", [tesseract recognizedText]);
+	NSString *batteryValue = [tesseract recognizedText];
+    batterVaule.text = batteryValue;
+	NSLog(@"hello carlos:%@", batteryValue);
+    int batteryValueInt = [batteryValue intValue];
+    NSLog(@"batteryValueInt:%d", batteryValueInt);
+
 
     
 }
 //TODO test the battery value when not charge
 - (UIImage *)captureScreenWithRect:(CGRect)rect {
-    rect.origin.x = 495;
+    rect.origin.x = 497;
     rect.origin.y = 0;
-    rect.size.width = 43;
+    rect.size.width = 41;
     rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
     NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
     CGImageRef image = UIGetScreenImage();

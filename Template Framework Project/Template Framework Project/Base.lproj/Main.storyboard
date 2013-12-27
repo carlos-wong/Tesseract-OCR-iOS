@@ -63,6 +63,7 @@
                     </view>
                     <connections>
                         <outlet property="batterPerecent" destination="P88-az-gd8" id="Xab-lw-tMy"/>
+                        <outlet property="batterVaule" destination="ecr-Xh-6nk" id="caX-dn-GNB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
