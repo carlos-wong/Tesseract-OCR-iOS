@@ -22,6 +22,24 @@
 @synthesize mylabel;
 @synthesize batterVaule;
 
+-(int)getBatteryValue
+{
+    CGRect tempRect;
+    UIImage *tempImage = [self captureScreenWithRect:tempRect];
+    
+    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
+    
+//    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
+//	
+//	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
+	[tesseract setImage:tempImage]; //image to check
+	[tesseract recognize];
+	NSString *batteryValue = [tesseract recognizedText];
+    batterVaule.text = batteryValue;
+    int batteryValueInt = [batteryValue intValue];
+    return batteryValueInt;
+}
+
 - (IBAction)myButton:(id)sender;
 {
     NSLog(@"some on press the button");
@@ -30,9 +48,9 @@
 
     UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
 
-    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
-	
-	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
+//    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
+//	
+//	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
 	[tesseract setImage:tempImage]; //image to check
     NSLog(@"the tesseract is %@",tesseract);
 	[tesseract recognize];
@@ -41,9 +59,6 @@
 	NSLog(@"hello carlos:%@", batteryValue);
     int batteryValueInt = [batteryValue intValue];
     NSLog(@"batteryValueInt:%d", batteryValueInt);
-
-
-    
 }
 //TODO test the battery value when not charge
 - (UIImage *)captureScreenWithRect:(CGRect)rect {
@@ -80,11 +95,11 @@
 	//eng.traineddata is in your "tessdata" folder.
 	
 	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
-	[tesseract setImage:[UIImage imageNamed:@"image_sample.jpg"]]; //image to check
-	[tesseract recognize];
-	
-	NSLog(@"hello carlos:%@", [tesseract recognizedText]);
-	[tesseract clear];
+//	[tesseract setImage:[UIImage imageNamed:@"image_sample.jpg"]]; //image to check
+//	[tesseract recognize];
+//	
+//	NSLog(@"hello carlos:%@", [tesseract recognizedText]);
+//	[tesseract clear];
 
 }
 
