@@ -17,7 +17,7 @@
     Tesseract* tesseract;
 
 }
-- (UIImage *)captureScreen;
+- (UIImage *)captureScreenWithRect:(CGRect)rect;
 @property(nonatomic,retain)IBOutlet UIImageView *batterPerecent;
 @property(nonatomic,retain)IBOutlet UILabel *mylabel;
 

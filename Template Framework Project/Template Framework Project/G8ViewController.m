@@ -25,19 +25,33 @@
 -(int)getBatteryValue
 {
     CGRect tempRect;
+    UIDevice *device = [UIDevice currentDevice];
+    device.batteryMonitoringEnabled = YES;
     UIImage *tempImage = [self captureScreenWithRect:tempRect];
     
-    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
+//    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
     
 //    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
-//	
 //	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
 	[tesseract setImage:tempImage]; //image to check
 	[tesseract recognize];
 	NSString *batteryValue = [tesseract recognizedText];
-    batterVaule.text = batteryValue;
+//    [tesseract clear];
+
     int batteryValueInt = [batteryValue intValue];
-    return batteryValueInt;
+    int batteryUidevices = device.batteryLevel * 100;
+    if(batteryValueInt > (batteryUidevices -10) && batteryUidevices < (batteryUidevices -10))
+    {
+        batterVaule.text = batteryValue;
+
+        return batteryValueInt;
+    }
+    else
+    {
+        NSString *string = [NSString stringWithFormat:@"%d", batteryUidevices];
+        batterVaule.text = string;
+        return batteryUidevices;
+    }
 }
 
 - (IBAction)myButton:(id)sender;
@@ -49,12 +63,13 @@
     UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
 
 //    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
-//	
+//
 //	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
 	[tesseract setImage:tempImage]; //image to check
     NSLog(@"the tesseract is %@",tesseract);
 	[tesseract recognize];
 	NSString *batteryValue = [tesseract recognizedText];
+//    [tesseract clear];
     batterVaule.text = batteryValue;
 	NSLog(@"hello carlos:%@", batteryValue);
     int batteryValueInt = [batteryValue intValue];
@@ -62,18 +77,43 @@
 }
 //TODO test the battery value when not charge
 - (UIImage *)captureScreenWithRect:(CGRect)rect {
-    rect.origin.x = 497;
+    UIDevice *device = [UIDevice currentDevice];
+    device.batteryMonitoringEnabled = YES;
+    if (device.batteryState == UIDeviceBatteryStateCharging || device.batteryState == UIDeviceBatteryStateFull)
+    {
+        rect.origin.x = 497;
+    }
+    else
+    {
+        rect.origin.x = 508;
+
+    }
+
     rect.origin.y = 0;
     rect.size.width = 41;
     rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
-    NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
+//    NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
     CGImageRef image = UIGetScreenImage();
     CGImageRef imageRef = CGImageCreateWithImageInRect(image, rect);
+    CGImageRelease(image);
+
     UIImage *result = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
     return result;
 }
+- (void)timerTicked:(NSTimer*)timer {
+    
+    int batteryValue = [self getBatteryValue];
+//    NSLog(@"battery value is: %d\n",batteryValue);
 
+}
+
+- (NSTimer*)createTimer {
+    
+    // create timer on run loop
+    return [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerTicked:) userInfo:nil repeats:YES];
+    
+}
 
 /****README****/
 /*
@@ -88,6 +128,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self createTimer];
+
 	// Do any additional setup after loading the view, typically from a nib.
 	
 	tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
