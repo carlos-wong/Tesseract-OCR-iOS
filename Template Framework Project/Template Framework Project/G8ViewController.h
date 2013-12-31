@@ -17,6 +17,7 @@
     Boolean inBackgournd;
     Tesseract* tesseract;
     NSDate *timingDate;
+    NSFileHandle *file;
 
 }
 - (UIImage *)captureScreenWithRect:(CGRect)rect;

@@ -45,17 +45,19 @@
         [tesseract setImage:tempImage]; //image to check
         [tesseract recognize];
         NSString *batteryValue = [tesseract recognizedText];
-        NSLog(@"batteryValue is %s ",batteryValue);
+//        NSLog(@"batteryValue is %@ ",batteryValue);
+        debugLabel.text = batteryValue;
+
         
         NSArray* part0 = [batteryValue componentsSeparatedByString: @"%"];
-        NSLog(@"%d part0 is %@ ",[part0 count],part0);
+//        NSLog(@"%d part0 is %@ ",[part0 count],part0);
         
         NSString* batteryValuePart1 = [part0 objectAtIndex: 0];
         NSArray* part1 = [batteryValuePart1 componentsSeparatedByString: @" "];
-        NSLog(@"%d part1 is %@ ",[part1 count],part1);
+//        NSLog(@"%d part1 is %@ ",[part1 count],part1);
         if([part1 count] > 1)
             batteryValue = [part1 objectAtIndex:1];
-//        debugLabel.text = batteryValue;
+        //        debugLabel.text = batteryValue;
         
         //[tesseract clear];
         
@@ -134,8 +136,25 @@
     static int oldBatteryValue = 0;
     if(batteryValue != oldBatteryValue)
     {
-        NSLog(@"old: %d New :%d Time taken: %f", oldBatteryValue,batteryValue,[[NSDate date] timeIntervalSinceDate:self->timingDate]);
-        self->timingDate = [NSDate date];
+        NSLog(@"old: %d New :%d Time taken: %f", oldBatteryValue,batteryValue,[[NSDate date] timeIntervalSinceDate:timingDate]);
+        
+        NSString *batterVauleChanged = [NSString stringWithFormat:@"old: %d New :%d Time taken: %f", oldBatteryValue,batteryValue,[[NSDate date] timeIntervalSinceDate:timingDate]];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//        [formatter setDateFormat:@"yyyy"];
+        
+        //Optionally for time zone converstions
+        [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
+        [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
+
+        
+        NSString *stringFromDate = [formatter stringFromDate:timingDate];
+        
+        //    [formatter release];
+        NSString *content = [NSString stringWithFormat:@"%@ \n%@\n", stringFromDate,batterVauleChanged];
+        [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
+        [file synchronizeFile];
+        NSLog(@"file handler is %@ conten is %@\n",file,content);
+        timingDate = [NSDate date];
         oldBatteryValue = batteryValue;
     }
     //    NSLog(@"battery value is: %d\n",batteryValue);
@@ -172,7 +191,7 @@
     NSLog(@"viewdidload");
     [super viewDidLoad];
     [self createTimer];
-    self->timingDate = [NSDate date];
+    timingDate = [NSDate date];
     
 	// Do any additional setup after loading the view, typically from a nib.
 	
@@ -180,7 +199,10 @@
 	//language are used for recognition. Ex: eng. Tesseract will search for a eng.traineddata file in the dataPath directory.
 	//eng.traineddata is in your "tessdata" folder.
 	
-//	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
+//	[tesseract setVariableValue:@"0123456789 %" forKey:@"tessedit_char_whitelist"]; //limit search
+    
+	[tesseract setVariableValue:@"'`" forKey:@"tessedit_char_blacklist"];
+
     //	[tesseract setImage:[UIImage imageNamed:@"image_sample.jpg"]]; //image to check
     //	[tesseract recognize];
     //
@@ -197,6 +219,51 @@
      selector:@selector(applicationDidBecomeActive)
      name:UIApplicationDidBecomeActiveNotification
      object:NULL];
+    
+    //Get the file path
+    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *fileName = [documentsDirectory stringByAppendingPathComponent:@"myFileName.txt"];
+    
+    //TODO remove the old log
+//    NSError *error;
+//    [[NSFileManager defaultManager] removeItemAtPath:fileName error:&error];
+//    NSLog(@"remove item error:%@", error);
+    
+    //create file if it doesn't exist
+    if(![[NSFileManager defaultManager] fileExistsAtPath:fileName])
+        [[NSFileManager defaultManager] createFileAtPath:fileName contents:nil attributes:nil];
+    
+    //append text to file (you'll probably want to add a newline every write)
+    file = [NSFileHandle fileHandleForUpdatingAtPath:fileName];
+    [file seekToEndOfFile];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//    [formatter setDateFormat:@"yyyy"];
+    
+    //Optionally for time zone converstions
+    [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
+    
+//    [formatter setDateStyle:kCFDateFormatterFullStyle];
+    [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
+    
+    NSString *stringFromDate = [formatter stringFromDate:timingDate];
+    
+//    [formatter release];
+    NSString *content = [NSString stringWithFormat:@"hello carlos %@\n", stringFromDate];
+    [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
+    [file synchronizeFile];
+
+    NSLog(@"file handler is %@ conten is %@\n",file,content);
+    
+    //        NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    //        NSString *fileName = [documentsDirectory stringByAppendingPathComponent:@"myFileName.txt"];
+    
+    //read the whole file as a single string
+    NSString *readOutput = [NSString stringWithContentsOfFile:fileName encoding:NSUTF8StringEncoding error:nil];
+    NSLog(@"read file start:");
+    NSLog(readOutput);
+    NSLog(@"read file end");
+
     
 }
 
