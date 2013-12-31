@@ -249,7 +249,7 @@
     NSString *stringFromDate = [formatter stringFromDate:timingDate];
     
 //    [formatter release];
-    NSString *content = [NSString stringWithFormat:@"hello carlos %@\n", stringFromDate];
+    NSString *content = [NSString stringWithFormat:@"\n\nhello carlos %@\n\n\n", stringFromDate];
     [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
     [file synchronizeFile];
 
