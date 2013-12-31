@@ -45,16 +45,17 @@
         [tesseract setImage:tempImage]; //image to check
         [tesseract recognize];
         NSString *batteryValue = [tesseract recognizedText];
-        //NSLog(@"foo is %s ",batteryValue);
+        NSLog(@"batteryValue is %s ",batteryValue);
         
         NSArray* part0 = [batteryValue componentsSeparatedByString: @"%"];
-//        NSLog(@"foo is %@ ",foo);
+        NSLog(@"%d part0 is %@ ",[part0 count],part0);
         
         NSString* batteryValuePart1 = [part0 objectAtIndex: 0];
         NSArray* part1 = [batteryValuePart1 componentsSeparatedByString: @" "];
-//        NSLog(@"foo1 is %@ ",foo1);
-        batteryValue = [part1 objectAtIndex:1];
-        debugLabel.text = batteryValue;
+        NSLog(@"%d part1 is %@ ",[part1 count],part1);
+        if([part1 count] > 1)
+            batteryValue = [part1 objectAtIndex:1];
+//        debugLabel.text = batteryValue;
         
         //[tesseract clear];
         
