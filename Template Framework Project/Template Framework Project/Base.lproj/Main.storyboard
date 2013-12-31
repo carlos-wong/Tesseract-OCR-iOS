@@ -50,6 +50,13 @@
                                     <action selector="myButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="77Y-4a-Rrn"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O0D-ok-ag5">
+                                <rect key="frame" x="10" y="369" width="290" height="26"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.50196081399917603" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                         <constraints>
@@ -66,6 +73,7 @@
                     <connections>
                         <outlet property="batterPerecent" destination="P88-az-gd8" id="Xab-lw-tMy"/>
                         <outlet property="batterVaule" destination="ecr-Xh-6nk" id="caX-dn-GNB"/>
+                        <outlet property="debugLabel" destination="O0D-ok-ag5" id="gsp-NJ-bPY"/>
                         <outlet property="mylabel" destination="oGC-S6-se2" id="ay0-Fp-4DO"/>
                     </connections>
                 </viewController>
