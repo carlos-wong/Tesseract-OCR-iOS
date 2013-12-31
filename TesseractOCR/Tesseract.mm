@@ -66,7 +66,7 @@ namespace tesseract {
 	
 	//	NSString *dataPath = [[NSBundle mainBundle] pathForResource:@"grc" ofType:@"traineddata"];
 	//
-	NSLog(@"DATAPATH %@", dataPath);
+//	NSLog(@"DATAPATH %@", dataPath);
 	
 	// Copy data in Doc Directory
 	if (![fileManager fileExistsAtPath:dataPath])

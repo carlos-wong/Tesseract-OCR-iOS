@@ -14,7 +14,9 @@
 {
     IBOutlet UIImageView *batterPerecent;
     IBOutlet UILabel *mylabel;
+    Boolean inBackgournd;
     Tesseract* tesseract;
+    NSDate *timingDate;
 
 }
 - (UIImage *)captureScreenWithRect:(CGRect)rect;

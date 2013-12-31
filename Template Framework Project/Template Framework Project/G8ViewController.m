@@ -14,6 +14,7 @@
 @interface G8ViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *batterVaule;
 - (IBAction)myButton:(id)sender;
+
 @end
 
 @implementation G8ViewController
@@ -22,29 +23,44 @@
 @synthesize mylabel;
 @synthesize batterVaule;
 
+
 -(int)getBatteryValue
 {
     CGRect tempRect;
     UIDevice *device = [UIDevice currentDevice];
     device.batteryMonitoringEnabled = YES;
-    UIImage *tempImage = [self captureScreenWithRect:tempRect];
-    
+    UIImage *tempImage = nil;
+    int batteryUidevices = device.batteryLevel * 100;
+
+    if(!inBackgournd)
+    {
+        tempImage = [self captureScreenWithRect:tempRect];
+        NSLog(@"screen captured image is: %@",tempImage);
 //    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
     
 //    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
 //	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
-	[tesseract setImage:tempImage]; //image to check
-	[tesseract recognize];
-	NSString *batteryValue = [tesseract recognizedText];
+        [tesseract setImage:tempImage]; //image to check
+        [tesseract recognize];
+        NSString *batteryValue = [tesseract recognizedText];
+    
+    
 //    [tesseract clear];
 
-    int batteryValueInt = [batteryValue intValue];
-    int batteryUidevices = device.batteryLevel * 100;
-    if(batteryValueInt > (batteryUidevices -10) && batteryUidevices < (batteryUidevices -10))
-    {
-        batterVaule.text = batteryValue;
+        int batteryValueInt = [batteryValue intValue];
+        mylabel.text = [NSString stringWithFormat:@"%d:%d", batteryUidevices,batteryValueInt];
+        if(batteryValueInt > (batteryUidevices - 5) && batteryValueInt < (batteryUidevices  + 5))
+        {
+            batterVaule.text = batteryValue;
 
-        return batteryValueInt;
+            return batteryValueInt;
+        }
+        else
+        {
+            NSString *string = [NSString stringWithFormat:@"%d", batteryUidevices];
+            batterVaule.text = string;
+            return batteryUidevices;
+        }
     }
     else
     {
@@ -85,12 +101,11 @@
     }
     else
     {
-        rect.origin.x = 508;
-
+        rect.origin.x = 510;
     }
 
     rect.origin.y = 0;
-    rect.size.width = 41;
+    rect.size.width = 39;
     rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
 //    NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
     CGImageRef image = UIGetScreenImage();
@@ -104,6 +119,13 @@
 - (void)timerTicked:(NSTimer*)timer {
     
     int batteryValue = [self getBatteryValue];
+    static int oldBatteryValue = 0;
+    if(batteryValue != oldBatteryValue)
+    {
+        NSLog(@"old: %d New :%d Time taken: %f", oldBatteryValue,batteryValue,[[NSDate date] timeIntervalSinceDate:self->timingDate]);
+        self->timingDate = [NSDate date];
+        oldBatteryValue = batteryValue;
+    }
 //    NSLog(@"battery value is: %d\n",batteryValue);
 
 }
@@ -115,6 +137,14 @@
     
 }
 
+- (void) applicationWillResignActive {
+    NSLog(@"carlos applicationWillResign");
+    inBackgournd = true;
+}
+- (void) applicationDidBecomeActive {
+    NSLog(@"carlos applicationDidBecomeActive");
+    inBackgournd = false;
+}
 /****README****/
 /*
  tessdata group is linked into the template project, from the main project.
@@ -127,8 +157,10 @@
 
 - (void)viewDidLoad
 {
+    NSLog(@"viewdidload");
     [super viewDidLoad];
     [self createTimer];
+    self->timingDate = [NSDate date];
 
 	// Do any additional setup after loading the view, typically from a nib.
 	
@@ -142,6 +174,17 @@
 //	
 //	NSLog(@"hello carlos:%@", [tesseract recognizedText]);
 //	[tesseract clear];
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(applicationWillResignActive)
+     name:UIApplicationWillResignActiveNotification
+     object:NULL];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(applicationDidBecomeActive)
+     name:UIApplicationDidBecomeActiveNotification
+     object:NULL];
 
 }
 
