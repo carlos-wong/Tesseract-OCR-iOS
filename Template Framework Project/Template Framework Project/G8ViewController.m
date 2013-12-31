@@ -37,17 +37,26 @@
     if(!inBackgournd)
     {
         tempImage = [self captureScreenWithRect:tempRect];
-        //        NSLog(@"screen captured image is: %@",tempImage);
-        //    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
+        //NSLog(@"screen captured image is: %@",tempImage);
+        //UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
         
-        //    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
-        //	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
+        //tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
+        //[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
         [tesseract setImage:tempImage]; //image to check
         [tesseract recognize];
         NSString *batteryValue = [tesseract recognizedText];
+        //NSLog(@"foo is %s ",batteryValue);
+        
+        NSArray* part0 = [batteryValue componentsSeparatedByString: @"%"];
+//        NSLog(@"foo is %@ ",foo);
+        
+        NSString* batteryValuePart1 = [part0 objectAtIndex: 0];
+        NSArray* part1 = [batteryValuePart1 componentsSeparatedByString: @" "];
+//        NSLog(@"foo1 is %@ ",foo1);
+        batteryValue = [part1 objectAtIndex:1];
         debugLabel.text = batteryValue;
         
-        //    [tesseract clear];
+        //[tesseract clear];
         
         int batteryValueInt = [batteryValue intValue];
         mylabel.text = [NSString stringWithFormat:@"%d:%d", batteryUidevices,batteryValueInt];
@@ -135,7 +144,7 @@
 - (NSTimer*)createTimer {
     
     // create timer on run loop
-    return [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(timerTicked:) userInfo:nil repeats:YES];
+    return [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerTicked:) userInfo:nil repeats:YES];
     
 }
 
@@ -170,7 +179,7 @@
 	//language are used for recognition. Ex: eng. Tesseract will search for a eng.traineddata file in the dataPath directory.
 	//eng.traineddata is in your "tessdata" folder.
 	
-	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
+//	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
     //	[tesseract setImage:[UIImage imageNamed:@"image_sample.jpg"]]; //image to check
     //	[tesseract recognize];
     //
