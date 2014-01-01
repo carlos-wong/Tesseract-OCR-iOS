@@ -33,7 +33,7 @@
     device.batteryMonitoringEnabled = YES;
     UIImage *tempImage = nil;
     int batteryUidevices = device.batteryLevel * 100;
-    
+    static NSString *oldBatteryValue = nil;
     if(!inBackgournd)
     {
         tempImage = [self captureScreenWithRect:tempRect];
@@ -45,18 +45,45 @@
         [tesseract setImage:tempImage]; //image to check
         [tesseract recognize];
         NSString *batteryValue = [tesseract recognizedText];
-//        NSLog(@"batteryValue is %@ ",batteryValue);
+        
+        if(![batteryValue isEqualToString:oldBatteryValue])
+        {
+            oldBatteryValue = batteryValue;
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            //        [formatter setDateFormat:@"yyyy"];
+            
+            //Optionally for time zone converstions
+            [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
+            [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
+            
+            
+            NSString *stringFromDate = [formatter stringFromDate:timingDate];
+            
+            //    [formatter release];
+            NSString *content = [NSString stringWithFormat:@"%@ \n%@\n", stringFromDate,oldBatteryValue];
+            [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
+            [file synchronizeFile];
+
+        }
+        NSLog(@"batteryValue is %@ ",batteryValue);
         debugLabel.text = batteryValue;
 
         
         NSArray* part0 = [batteryValue componentsSeparatedByString: @"%"];
-//        NSLog(@"%d part0 is %@ ",[part0 count],part0);
+        NSLog(@"%d part0 is %@ ",[part0 count],part0);
         
         NSString* batteryValuePart1 = [part0 objectAtIndex: 0];
         NSArray* part1 = [batteryValuePart1 componentsSeparatedByString: @" "];
-//        NSLog(@"%d part1 is %@ ",[part1 count],part1);
-        if([part1 count] > 1)
-            batteryValue = [part1 objectAtIndex:1];
+        NSLog(@"%d part1 is %@ ",[part1 count],part1);
+        if([part1 count] >= 1)
+            batteryValue = [part1 objectAtIndex:([part1 count]-1)];
+
+//        if([part1 count] == 4)
+//            batteryValue = [part1 objectAtIndex:3];
+//        else  if([part1 count] == 3)
+//            batteryValue = [part1 objectAtIndex:2];
+//        else  if([part1 count] == 2)
+//            batteryValue = [part1 objectAtIndex:1];
         //        debugLabel.text = batteryValue;
         
         //[tesseract clear];
@@ -117,9 +144,10 @@
     //    {
     //        rect.origin.x = 510;
     //    }
-    rect.origin.x = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*3/4;
+//    rect.origin.x = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*2/3;
+    rect.origin.x = 0;
     rect.origin.y = 0;
-    rect.size.width = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*1/4;
+    rect.size.width = (2* [[UIApplication sharedApplication] statusBarFrame].size.width);
     rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
     //    NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
     CGImageRef image = UIGetScreenImage();
@@ -130,6 +158,7 @@
     CGImageRelease(imageRef);
     return result;
 }
+
 - (void)timerTicked:(NSTimer*)timer {
     
     int batteryValue = [self getBatteryValue];
@@ -195,13 +224,17 @@
     
 	// Do any additional setup after loading the view, typically from a nib.
 	
-	tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
+	tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"ita"];
 	//language are used for recognition. Ex: eng. Tesseract will search for a eng.traineddata file in the dataPath directory.
 	//eng.traineddata is in your "tessdata" folder.
 	
-//	[tesseract setVariableValue:@"0123456789 %" forKey:@"tessedit_char_whitelist"]; //limit search
+	[tesseract setVariableValue:@"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ%" forKey:@"tessedit_char_whitelist"]; //limit search
+    [tesseract setVariableValue:@"0%" forKey:@"language_model_penalty_non_freq_dict_word"]; //limit search
+    [tesseract setVariableValue:@"0%" forKey:@"language_model_penalty_non_dict_word"]; //limit search
+
     
-	[tesseract setVariableValue:@"'`" forKey:@"tessedit_char_blacklist"];
+    
+//	[tesseract setVariableValue:@"'` " forKey:@"tessedit_char_blacklist"];
 
     //	[tesseract setImage:[UIImage imageNamed:@"image_sample.jpg"]]; //image to check
     //	[tesseract recognize];
