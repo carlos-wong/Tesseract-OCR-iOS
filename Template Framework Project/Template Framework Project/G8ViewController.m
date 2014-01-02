@@ -65,16 +65,16 @@
             [file synchronizeFile];
 
         }
-        NSLog(@"batteryValue is %@ ",batteryValue);
+//        NSLog(@"batteryValue is %@ ",batteryValue);
         debugLabel.text = batteryValue;
 
         
         NSArray* part0 = [batteryValue componentsSeparatedByString: @"%"];
-        NSLog(@"%d part0 is %@ ",[part0 count],part0);
+//        NSLog(@"%d part0 is %@ ",[part0 count],part0);
         
         NSString* batteryValuePart1 = [part0 objectAtIndex: 0];
         NSArray* part1 = [batteryValuePart1 componentsSeparatedByString: @" "];
-        NSLog(@"%d part1 is %@ ",[part1 count],part1);
+//        NSLog(@"%d part1 is %@ ",[part1 count],part1);
         if([part1 count] >= 1)
             batteryValue = [part1 objectAtIndex:([part1 count]-1)];
 
@@ -90,7 +90,7 @@
         
         int batteryValueInt = [batteryValue intValue];
         mylabel.text = [NSString stringWithFormat:@"%d:%d", batteryUidevices,batteryValueInt];
-        if(batteryValueInt > (batteryUidevices - 5) && batteryValueInt < (batteryUidevices  + 5))
+        if(batteryValueInt > (batteryUidevices - 10) && batteryValueInt < (batteryUidevices  + 10))
         {
             batterVaule.text = batteryValue;
             
@@ -228,9 +228,9 @@
 	//language are used for recognition. Ex: eng. Tesseract will search for a eng.traineddata file in the dataPath directory.
 	//eng.traineddata is in your "tessdata" folder.
 	
-	[tesseract setVariableValue:@"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ%" forKey:@"tessedit_char_whitelist"]; //limit search
-    [tesseract setVariableValue:@"0%" forKey:@"language_model_penalty_non_freq_dict_word"]; //limit search
-    [tesseract setVariableValue:@"0%" forKey:@"language_model_penalty_non_dict_word"]; //limit search
+	[tesseract setVariableValue:@"0123456789%" forKey:@"tessedit_char_whitelist"]; //limit search
+//    [tesseract setVariableValue:@"0" forKey:@"language_model_penalty_non_freq_dict_word"]; //limit search
+//    [tesseract setVariableValue:@"0" forKey:@"language_model_penalty_non_dict_word"]; //limit search
 
     
     
