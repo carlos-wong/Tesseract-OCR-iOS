@@ -48,43 +48,27 @@
         
         if(![batteryValue isEqualToString:oldBatteryValue])
         {
+            NSLog(@"%@ \n%@\n", batteryValue,oldBatteryValue);
             oldBatteryValue = batteryValue;
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            //        [formatter setDateFormat:@"yyyy"];
-            
-            //Optionally for time zone converstions
-            [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
-            [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
-            
-            
-            NSString *stringFromDate = [formatter stringFromDate:timingDate];
-            
-            //    [formatter release];
-            NSString *content = [NSString stringWithFormat:@"%@ \n%@\n", stringFromDate,oldBatteryValue];
-            [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
-            [file synchronizeFile];
+//            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//            //        [formatter setDateFormat:@"yyyy"];
+//            
+//            //Optionally for time zone converstions
+//            [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
+//            [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
+//            
+//            
+//            NSString *stringFromDate = [formatter stringFromDate:timingDate];
+//            
+//            //    [formatter release];
+//            NSString *content = [NSString stringWithFormat:@"%@ \n%@\n", stringFromDate,oldBatteryValue];
+//            [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
+//            [file synchronizeFile];
 
         }
 //        NSLog(@"batteryValue is %@ ",batteryValue);
         debugLabel.text = batteryValue;
 
-        
-        NSArray* part0 = [batteryValue componentsSeparatedByString: @"%"];
-//        NSLog(@"%d part0 is %@ ",[part0 count],part0);
-        
-        NSString* batteryValuePart1 = [part0 objectAtIndex: 0];
-        NSArray* part1 = [batteryValuePart1 componentsSeparatedByString: @" "];
-//        NSLog(@"%d part1 is %@ ",[part1 count],part1);
-        if([part1 count] >= 1)
-            batteryValue = [part1 objectAtIndex:([part1 count]-1)];
-
-//        if([part1 count] == 4)
-//            batteryValue = [part1 objectAtIndex:3];
-//        else  if([part1 count] == 3)
-//            batteryValue = [part1 objectAtIndex:2];
-//        else  if([part1 count] == 2)
-//            batteryValue = [part1 objectAtIndex:1];
-        //        debugLabel.text = batteryValue;
         
         //[tesseract clear];
         
@@ -132,6 +116,10 @@
     int batteryValueInt = [batteryValue intValue];
     NSLog(@"batteryValueInt:%d", batteryValueInt);
 }
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
+}
 //TODO test the battery value when not charge
 - (UIImage *)captureScreenWithRect:(CGRect)rect {
     UIDevice *device = [UIDevice currentDevice];
@@ -145,9 +133,9 @@
     //        rect.origin.x = 510;
     //    }
 //    rect.origin.x = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*2/3;
-    rect.origin.x = 0;
     rect.origin.y = 0;
-    rect.size.width = (2* [[UIApplication sharedApplication] statusBarFrame].size.width);
+    rect.origin.x = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*5/9;
+    rect.size.width = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*4/9;
     rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
     //    NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
     CGImageRef image = UIGetScreenImage();
@@ -168,21 +156,26 @@
         NSLog(@"old: %d New :%d Time taken: %f", oldBatteryValue,batteryValue,[[NSDate date] timeIntervalSinceDate:timingDate]);
         
         NSString *batterVauleChanged = [NSString stringWithFormat:@"old: %d New :%d Time taken: %f", oldBatteryValue,batteryValue,[[NSDate date] timeIntervalSinceDate:timingDate]];
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//        [formatter setDateFormat:@"yyyy"];
         
-        //Optionally for time zone converstions
-        [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
-        [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
-
-        
-        NSString *stringFromDate = [formatter stringFromDate:timingDate];
-        
-        //    [formatter release];
-        NSString *content = [NSString stringWithFormat:@"%@ \n%@\n", stringFromDate,batterVauleChanged];
-        [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
-        [file synchronizeFile];
-        NSLog(@"file handler is %@ conten is %@\n",file,content);
+        Boolean writeFlie = false;
+        if(writeFlie)
+        {
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            //        [formatter setDateFormat:@"yyyy"];
+            
+            //Optionally for time zone converstions
+            [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
+            [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
+            
+            
+            NSString *stringFromDate = [formatter stringFromDate:timingDate];
+            
+            //    [formatter release];
+            NSString *content = [NSString stringWithFormat:@"%@ \n%@\n", stringFromDate,batterVauleChanged];
+            [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
+            [file synchronizeFile];
+            NSLog(@"file handler is %@ conten is %@\n",file,content);
+        }
         timingDate = [NSDate date];
         oldBatteryValue = batteryValue;
     }
@@ -205,6 +198,52 @@
     NSLog(@"carlos applicationDidBecomeActive");
     inBackgournd = false;
 }
+-(void)createFfile{
+    //Get the file path
+    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *fileName = [documentsDirectory stringByAppendingPathComponent:@"myFileName.txt"];
+    
+    //TODO remove the old log
+    //    NSError *error;
+    //    [[NSFileManager defaultManager] removeItemAtPath:fileName error:&error];
+    //    NSLog(@"remove item error:%@", error);
+    
+    //create file if it doesn't exist
+    if(![[NSFileManager defaultManager] fileExistsAtPath:fileName])
+        [[NSFileManager defaultManager] createFileAtPath:fileName contents:nil attributes:nil];
+    
+    //append text to file (you'll probably want to add a newline every write)
+    file = [NSFileHandle fileHandleForUpdatingAtPath:fileName];
+    [file seekToEndOfFile];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    //    [formatter setDateFormat:@"yyyy"];
+    
+    //Optionally for time zone converstions
+    [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
+    
+    //    [formatter setDateStyle:kCFDateFormatterFullStyle];
+    [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
+    
+    NSString *stringFromDate = [formatter stringFromDate:timingDate];
+    
+    //    [formatter release];
+    NSString *content = [NSString stringWithFormat:@"\n\nhello carlos %@\n\n\n", stringFromDate];
+    [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
+    [file synchronizeFile];
+    
+    NSLog(@"file handler is %@ conten is %@\n",file,content);
+    
+    //        NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    //        NSString *fileName = [documentsDirectory stringByAppendingPathComponent:@"myFileName.txt"];
+    
+    //read the whole file as a single string
+    NSString *readOutput = [NSString stringWithContentsOfFile:fileName encoding:NSUTF8StringEncoding error:nil];
+    NSLog(@"read file start:");
+    NSLog(@"%@",readOutput);
+    NSLog(@"read file end");
+}
+
 /****README****/
 /*
  tessdata group is linked into the template project, from the main project.
@@ -253,49 +292,7 @@
      name:UIApplicationDidBecomeActiveNotification
      object:NULL];
     
-    //Get the file path
-    NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *fileName = [documentsDirectory stringByAppendingPathComponent:@"myFileName.txt"];
-    
-    //TODO remove the old log
-//    NSError *error;
-//    [[NSFileManager defaultManager] removeItemAtPath:fileName error:&error];
-//    NSLog(@"remove item error:%@", error);
-    
-    //create file if it doesn't exist
-    if(![[NSFileManager defaultManager] fileExistsAtPath:fileName])
-        [[NSFileManager defaultManager] createFileAtPath:fileName contents:nil attributes:nil];
-    
-    //append text to file (you'll probably want to add a newline every write)
-    file = [NSFileHandle fileHandleForUpdatingAtPath:fileName];
-    [file seekToEndOfFile];
-    
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//    [formatter setDateFormat:@"yyyy"];
-    
-    //Optionally for time zone converstions
-    [formatter setTimeZone:[NSTimeZone timeZoneWithName:@"..."]];
-    
-//    [formatter setDateStyle:kCFDateFormatterFullStyle];
-    [formatter setDateFormat:@"MM/dd/yyyy hh:mma"];
-    
-    NSString *stringFromDate = [formatter stringFromDate:timingDate];
-    
-//    [formatter release];
-    NSString *content = [NSString stringWithFormat:@"\n\nhello carlos %@\n\n\n", stringFromDate];
-    [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
-    [file synchronizeFile];
-
-    NSLog(@"file handler is %@ conten is %@\n",file,content);
-    
-    //        NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    //        NSString *fileName = [documentsDirectory stringByAppendingPathComponent:@"myFileName.txt"];
-    
-    //read the whole file as a single string
-    NSString *readOutput = [NSString stringWithContentsOfFile:fileName encoding:NSUTF8StringEncoding error:nil];
-    NSLog(@"read file start:");
-    NSLog(readOutput);
-    NSLog(@"read file end");
+//    [self createFfile];
 
     
 }
