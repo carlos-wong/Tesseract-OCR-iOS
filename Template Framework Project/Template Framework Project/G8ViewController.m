@@ -11,10 +11,12 @@
 #import <QuartzCore/QuartzCore.h>
 
 
+
 @interface G8ViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *batterVaule;
 - (IBAction)myButton:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *debugLabel;
+@property(nonatomic, copy) NSArray *batteryRect;
 
 @end
 
@@ -24,27 +26,72 @@
 @synthesize mylabel;
 @synthesize batterVaule;
 @synthesize debugLabel;
+@synthesize batteryRect;
 
 
 -(int)getBatteryValue
 {
-    CGRect tempRect;
     UIDevice *device = [UIDevice currentDevice];
     device.batteryMonitoringEnabled = YES;
     UIImage *tempImage = nil;
     int batteryUidevices = device.batteryLevel * 100;
     static NSString *oldBatteryValue = nil;
+    NSString *batteryValue;
+    int batteryVauleInt = 0;
+    int readCount = 0;
+    Boolean run = true;
     if(!inBackgournd)
     {
-        tempImage = [self captureScreenWithRect:tempRect];
-        //NSLog(@"screen captured image is: %@",tempImage);
-        //UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
-        
-        //tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
-        //[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
-        [tesseract setImage:tempImage]; //image to check
-        [tesseract recognize];
-        NSString *batteryValue = [tesseract recognizedText];
+        do {
+            NSValue *val = [batteryRect objectAtIndex:readCount];
+            CGRect p = [val CGRectValue];
+            tempImage = [self captureScreenWithRect:p];
+//            UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
+            [tesseract setImage:tempImage]; //image to check
+            [tesseract recognize];
+            batteryValue = [tesseract recognizedText];
+            NSLog(@"batterValue string before trim --%@** is %d",batteryValue,[batteryValue length]);
+//            batteryValue  = [batteryValue stringByTrimmingCharactersInSet:whitespaceCharacterSet];
+            batteryValue = [batteryValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            NSLog(@"batteryValue without space is--%@** and batteryValue length is %d readcount is %d",batteryValue,[batteryValue length],readCount);
+            batteryVauleInt = [batteryValue intValue];
+            NSLog(@"batteryVaule int is %d",batteryVauleInt);
+            switch (readCount) {
+                case 0:
+                    if((batteryVauleInt >=0 && batteryVauleInt < 10)&&([batteryValue length] == 1))
+                        
+                        run = false;
+                    break;
+                case 1:
+                    if((batteryVauleInt >=10 && batteryVauleInt <= 99) && ([batteryValue length]== 2))
+                        run = false;
+                    break;
+                case 2:
+                    NSLog(@"batteryVauleInt is %d length is %d",batteryVauleInt,[batteryValue length]);
+                    if((batteryVauleInt == 100)&&([batteryValue length] == 3))
+                    {
+                        NSLog(@"got the 100");
+                        run = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if(!run)
+                break;
+            readCount++;
+            if(readCount > 2)
+                break;
+        } while (run);
+        if(readCount > 2)
+        {
+            //could not get the correct value
+            [batterVaule setText:@""];
+            NSLog(@"could not find the value");
+        }
+        else{
+            NSLog(@"find the value is %@",batteryValue);
+        }
         
         if(![batteryValue isEqualToString:oldBatteryValue])
         {
@@ -67,19 +114,7 @@
 
         }
         debugLabel.text = batteryValue;
-
-        NSArray* part0 = [batteryValue componentsSeparatedByString: @"%"];
-        NSLog(@"%d part0 is %@ ",[part0 count],part0);
         
-        NSString* batteryValuePart1 = [part0 objectAtIndex: 0];
-        NSArray* part1 = [batteryValuePart1 componentsSeparatedByString: @" "];
-        NSLog(@"%d part1 is %@ ",[part1 count],part1);
-        if([part1 count] >= 1)
-            batteryValue = [part1 objectAtIndex:([part1 count]-1)];
-//        NSLog(@"batteryValue is %@ ",batteryValue);
-
-        
-        //[tesseract clear];
         
         int batteryValueInt = [batteryValue intValue];
         mylabel.text = [NSString stringWithFormat:@"%d:%d", batteryUidevices,batteryValueInt];
@@ -107,23 +142,8 @@
 - (IBAction)myButton:(id)sender;
 {
     NSLog(@"some on press the button");
-    CGRect tempRect;
-    UIImage *tempImage = [self captureScreenWithRect:tempRect];
-    
-    UIImageWriteToSavedPhotosAlbum(tempImage,nil,nil,nil);
-    
-    //    tesseract = [[Tesseract alloc] initWithDataPath:@"tessdata" language:@"eng"];
-    //
-    //	[tesseract setVariableValue:@"0123456789" forKey:@"tessedit_char_whitelist"]; //limit search
-	[tesseract setImage:tempImage]; //image to check
-    NSLog(@"the tesseract is %@",tesseract);
-	[tesseract recognize];
-	NSString *batteryValue = [tesseract recognizedText];
-    //    [tesseract clear];
-    batterVaule.text = batteryValue;
-	NSLog(@"hello carlos:%@", batteryValue);
-    int batteryValueInt = [batteryValue intValue];
-    NSLog(@"batteryValueInt:%d", batteryValueInt);
+    int batteryValue = [self getBatteryValue];
+    NSLog(@"batteryValue is %d",batteryValue);
 }
 -(UIStatusBarStyle)preferredStatusBarStyle
 {
@@ -133,20 +153,17 @@
 - (UIImage *)captureScreenWithRect:(CGRect)rect {
     UIDevice *device = [UIDevice currentDevice];
     device.batteryMonitoringEnabled = YES;
-    //    if (device.batteryState == UIDeviceBatteryStateCharging || device.batteryState == UIDeviceBatteryStateFull)
-    //    {
-    //        rect.origin.x = 497;
-    //    }
-    //    else
-    //    {
-    //        rect.origin.x = 510;
-    //    }
+    if (device.batteryState == UIDeviceBatteryStateCharging || device.batteryState == UIDeviceBatteryStateFull)
+    {
+        rect.origin.x -= 16;
+    }
+
 //    rect.origin.x = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*2/3;
-    rect.origin.y = 0;
-    rect.origin.x = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*5/9;
-    rect.size.width = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*4/9;
-    rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
-    //    NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
+//    rect.origin.y = 0;
+//    rect.origin.x = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*5/9;
+//    rect.size.width = (2* [[UIApplication sharedApplication] statusBarFrame].size.width)*4/9;
+//    rect.size.height = 2* [[UIApplication sharedApplication] statusBarFrame].size.height;
+//    NSLog(@"x is %f width is %f",rect.origin.x,rect.size.width);
     CGImageRef image = UIGetScreenImage();
     CGImageRef imageRef = CGImageCreateWithImageInRect(image, rect);
     CGImageRelease(image);
@@ -195,7 +212,7 @@
 - (NSTimer*)createTimer {
     
     // create timer on run loop
-    return [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerTicked:) userInfo:nil repeats:YES];
+    return [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(timerTicked:) userInfo:nil repeats:YES];
     
 }
 
@@ -267,6 +284,7 @@
 {
     NSLog(@"viewdidload");
     [super viewDidLoad];
+    chargeImageLength = 16;
     [self createTimer];
     timingDate = [NSDate date];
     
@@ -276,7 +294,7 @@
 	//language are used for recognition. Ex: eng. Tesseract will search for a eng.traineddata file in the dataPath directory.
 	//eng.traineddata is in your "tessdata" folder.
 	
-//	[tesseract setVariableValue:@" 0123456789%" forKey:@"tessedit_char_whitelist"]; //limit search
+	[tesseract setVariableValue:@"0123456789%" forKey:@"tessedit_char_whitelist"]; //limit search
 //    [tesseract setVariableValue:@"'0'3" forKey:@"language_model_penalty_non_freq_dict_word"]; //limit search
 //    [tesseract setVariableValue:@"0" forKey:@"language_model_penalty_non_dict_word"]; //limit search
 
@@ -300,6 +318,12 @@
      selector:@selector(applicationDidBecomeActive)
      name:UIApplicationDidBecomeActiveNotification
      object:NULL];
+    
+    batteryRect = [NSArray arrayWithObjects:
+                   [NSValue valueWithCGRect:CGRectMake(524, 0, 26, 40)],
+                   [NSValue valueWithCGRect:CGRectMake(520, 0, 30, 40)],
+                   [NSValue valueWithCGRect:CGRectMake(508, 0, 42, 40)],
+                     nil];
     
     [self createFfile];
 

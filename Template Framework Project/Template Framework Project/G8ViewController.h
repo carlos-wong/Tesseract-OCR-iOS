@@ -18,6 +18,7 @@
     Tesseract* tesseract;
     NSDate *timingDate;
     NSFileHandle *file;
+    int chargeImageLength;
 
 }
 - (UIImage *)captureScreenWithRect:(CGRect)rect;
