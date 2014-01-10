@@ -40,6 +40,9 @@
     int batteryVauleInt = 0;
     int readCount = 0;
     Boolean run = true;
+    NSString *errorLog = @"";
+
+
     if(!inBackgournd)
     {
         do {
@@ -56,6 +59,7 @@
             NSLog(@"batteryValue without space is--%@** and batteryValue length is %d readcount is %d",batteryValue,[batteryValue length],readCount);
             batteryVauleInt = [batteryValue intValue];
             NSLog(@"batteryVaule int is %d",batteryVauleInt);
+            errorLog = [errorLog stringByAppendingString:[NSString stringWithFormat:@"batteryValue without space is--%@** and batteryValue length is %d readcount is %d\n",batteryValue,[batteryValue length],readCount]];
             switch (readCount) {
                 case 0:
                     if((batteryVauleInt >=0 && batteryVauleInt < 10)&&([batteryValue length] == 1))
@@ -88,6 +92,9 @@
             //could not get the correct value
             [batterVaule setText:@""];
             NSLog(@"could not find the value");
+            errorLog = [errorLog stringByAppendingString:[NSString stringWithFormat:@"could not find the value\n"]];
+            [file writeData:[errorLog dataUsingEncoding:NSUTF8StringEncoding]];
+            [file synchronizeFile];
         }
         else{
             NSLog(@"find the value is %@",batteryValue);
@@ -326,6 +333,8 @@
                      nil];
     
     [self createFfile];
+
+    
 
     
 }
