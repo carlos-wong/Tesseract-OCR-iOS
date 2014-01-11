@@ -67,7 +67,7 @@
             errorLog = [errorLog stringByAppendingString:[NSString stringWithFormat:@"batteryValue without space is--%@** and batteryValue length is %d readcount is %d\n",batteryValue,[batteryValue length],readCount]];
             switch (readCount) {
                 case 0:
-                    if((batteryVauleInt >=0 && batteryVauleInt < 10)&&([batteryValue length] == 1))
+                    if((batteryVauleInt >0 && batteryVauleInt < 10)&&([batteryValue length] == 1))
                         
                         run = false;
                     break;
@@ -93,12 +93,14 @@
         if(readCount > 2)
         {
             //could not get the correct value
-            [batterVaule setText:@""];
 #ifdef DEBUG_GETBATTERY
             NSLog(@"could not find the value");
 #endif
             errorLog = [errorLog stringByAppendingString:[NSString stringWithFormat:@"could not find the value\n"]];
             NSLog(@"%@",errorLog);
+            return -1;
+
+            [batterVaule setText:@""];
             [file writeData:[errorLog dataUsingEncoding:NSUTF8StringEncoding]];
             [file synchronizeFile];
         }
@@ -193,6 +195,8 @@
     if(inBackgournd)
         return;
     int batteryValue = [self getBatteryValue];
+    if(batteryValue == -1)
+        return;
     static int oldBatteryValue = 0;
     if(batteryValue != oldBatteryValue)
     {
