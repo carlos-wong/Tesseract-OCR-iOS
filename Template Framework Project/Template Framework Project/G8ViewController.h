@@ -19,6 +19,7 @@
     NSDate *timingDate;
     NSFileHandle *file;
     int chargeImageLength;
+    NSTimer *timer;
 
 }
 - (UIImage *)captureScreenWithRect:(CGRect)rect;

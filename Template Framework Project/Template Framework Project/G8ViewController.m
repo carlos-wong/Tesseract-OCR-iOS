@@ -28,7 +28,7 @@
 @synthesize debugLabel;
 @synthesize batteryRect;
 
-
+//#define DEBUG_GETBATTERY 1
 -(int)getBatteryValue
 {
     UIDevice *device = [UIDevice currentDevice];
@@ -53,12 +53,17 @@
             [tesseract setImage:tempImage]; //image to check
             [tesseract recognize];
             batteryValue = [tesseract recognizedText];
+#ifdef DEBUG_GETBATTERY
             NSLog(@"batterValue string before trim --%@** is %d",batteryValue,[batteryValue length]);
-//            batteryValue  = [batteryValue stringByTrimmingCharactersInSet:whitespaceCharacterSet];
+#endif
             batteryValue = [batteryValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+#ifdef DEBUG_GETBATTERY
             NSLog(@"batteryValue without space is--%@** and batteryValue length is %d readcount is %d",batteryValue,[batteryValue length],readCount);
+#endif
             batteryVauleInt = [batteryValue intValue];
+#ifdef DEBUG_GETBATTERY
             NSLog(@"batteryVaule int is %d",batteryVauleInt);
+#endif
             errorLog = [errorLog stringByAppendingString:[NSString stringWithFormat:@"batteryValue without space is--%@** and batteryValue length is %d readcount is %d\n",batteryValue,[batteryValue length],readCount]];
             switch (readCount) {
                 case 0:
@@ -71,10 +76,8 @@
                         run = false;
                     break;
                 case 2:
-                    NSLog(@"batteryVauleInt is %d length is %d",batteryVauleInt,[batteryValue length]);
                     if((batteryVauleInt == 100)&&([batteryValue length] == 3))
                     {
-                        NSLog(@"got the 100");
                         run = false;
                     }
                     break;
@@ -91,13 +94,19 @@
         {
             //could not get the correct value
             [batterVaule setText:@""];
+#ifdef DEBUG_GETBATTERY
             NSLog(@"could not find the value");
+#endif
             errorLog = [errorLog stringByAppendingString:[NSString stringWithFormat:@"could not find the value\n"]];
+            NSLog(@"%@",errorLog);
             [file writeData:[errorLog dataUsingEncoding:NSUTF8StringEncoding]];
             [file synchronizeFile];
         }
         else{
+            ;
+#ifdef DEBUG_GETBATTERY
             NSLog(@"find the value is %@",batteryValue);
+#endif
         }
         
         if(![batteryValue isEqualToString:oldBatteryValue])
@@ -181,7 +190,8 @@
 }
 
 - (void)timerTicked:(NSTimer*)timer {
-    
+    if(inBackgournd)
+        return;
     int batteryValue = [self getBatteryValue];
     static int oldBatteryValue = 0;
     if(batteryValue != oldBatteryValue)
@@ -207,7 +217,7 @@
             NSString *content = [NSString stringWithFormat:@"%@ \n%@\n", stringFromDate,batterVauleChanged];
             [file writeData:[content dataUsingEncoding:NSUTF8StringEncoding]];
             [file synchronizeFile];
-            NSLog(@"file handler is %@ conten is %@\n",file,content);
+//            NSLog(@"file handler is %@ conten is %@\n",file,content);
         }
         timingDate = [NSDate date];
         oldBatteryValue = batteryValue;
@@ -225,11 +235,20 @@
 
 - (void) applicationWillResignActive {
     NSLog(@"carlos applicationWillResign");
+    [timer invalidate];
+    timer = nil;
     inBackgournd = true;
+    
 }
 - (void) applicationDidBecomeActive {
     NSLog(@"carlos applicationDidBecomeActive");
+    if(timer) {
+        [timer invalidate];
+        timer = nil;
+    }
+    timer = [self createTimer];
     inBackgournd = false;
+
 }
 -(void)createFfile{
     //Get the file path
@@ -292,7 +311,7 @@
     NSLog(@"viewdidload");
     [super viewDidLoad];
     chargeImageLength = 16;
-    [self createTimer];
+    timer = [self createTimer];
     timingDate = [NSDate date];
     
 	// Do any additional setup after loading the view, typically from a nib.
